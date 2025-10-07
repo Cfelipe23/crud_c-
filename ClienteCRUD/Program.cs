@@ -1,6 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using ClienteCRUD.Infrastructure.Persistence;
+using ClienteCRUD.Modules.Clientes.Application;
+using ClienteCRUD.Modules.Clientes.Infrastructure;
+using ClienteCRUD.Modules.Clientes.Domain;
+using ClienteCRUD.Modules.Lotes.Application;
+using ClienteCRUD.Modules.Lotes.Infrastructure;
+using ClienteCRUD.Modules.Lotes.Domain;
+using ClienteCRUD.Modules.Productos.Application;
+using ClienteCRUD.Modules.Productos.Infrastructure;
+using ClienteCRUD.Modules.Productos.Domain;
 
 namespace ClienteCRUD
 {

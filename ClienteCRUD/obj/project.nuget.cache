@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "a1kMPzKyqQU=",
+  "dgSpecHash": "xi2N5Kf6yyE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\Desktop\\Shoope\\ClienteCRUD\\ClienteCRUD.csproj",
+  "projectFilePath": "C:\\Users\\user\\Desktop\\crud_c-\\ClienteCRUD\\ClienteCRUD.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\user\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.data.sqlite\\9.0.8\\microsoft.data.sqlite.9.0.8.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.data.sqlite.core\\9.0.8\\microsoft.data.sqlite.core.9.0.8.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.10\\sqlitepclraw.bundle_e_sqlite3.2.1.10.nupkg.sha512",
