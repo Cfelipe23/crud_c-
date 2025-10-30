@@ -1,41 +1,120 @@
+using crud_c_.Infrastructure.Persistence;
+using crud_c_.Modules.Clientes.Application;
+using crud_c_.Modules.Clientes.Infrastructure;
+using crud_c_.Modules.Lotes.Application;
+using crud_c_.Modules.Lotes.Infrastructure;
+using crud_c_.Modules.Productos.Application;
+using crud_c_.Modules.Productos.Infrastructure;
+using Dapper;
+using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Add services to the container
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.WriteIndented = true;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "Sistema CRUD API", 
+        Version = "v1",
+        Description = "API para gestión de Clientes, Lotes y Productos"
+    });
+});
+
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+// Configurar servicios
+string dbPath = Path.Combine(builder.Environment.ContentRootPath, "clientes.db");
+builder.Services.AddSingleton<SqliteConnectionFactory>(sp => 
+    new SqliteConnectionFactory($"Data Source={dbPath}"));
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<ILoteRepository, LoteRepository>();
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema CRUD API V1");
+        c.RoutePrefix = "swagger";
+    });
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
+app.UseAuthorization();
+app.MapControllers();
 
-var summaries = new[]
+// Asegurar que la base de datos existe
+using (var scope = app.Services.CreateScope())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    try
+    {
+        var factory = scope.ServiceProvider.GetRequiredService<SqliteConnectionFactory>();
+        using var connection = factory.CreateConnection();
+        connection.Open();
+        
+        // Crear tablas si no existen
+        connection.Execute(@"
+            CREATE TABLE IF NOT EXISTS Clientes (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Nombre TEXT NOT NULL,
+                Apellido TEXT NOT NULL,
+                Direccion TEXT,
+                Telefono TEXT,
+                Email TEXT
+            );
+            
+            CREATE TABLE IF NOT EXISTS Productos (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Nombre TEXT NOT NULL,
+                Descripcion TEXT,
+                Precio DECIMAL(10,2) NOT NULL,
+                Stock INTEGER NOT NULL
+            );
+            
+            CREATE TABLE IF NOT EXISTS Lotes (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Codigo TEXT NOT NULL,
+                FechaIngreso DATE NOT NULL,
+                Cantidad INTEGER NOT NULL,
+                ProductoId INTEGER NOT NULL,
+                FOREIGN KEY(ProductoId) REFERENCES Productos(Id)
+            );
+        ");
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+        app.Logger.LogInformation("Base de datos inicializada correctamente.");
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Error al inicializar la base de datos.");
+        throw;
+    }
+}
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
