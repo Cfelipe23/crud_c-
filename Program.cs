@@ -8,6 +8,8 @@ using crud_c_.Modules.Productos.Infrastructure;
 using Dapper;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using System.Reflection;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,38 +17,50 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy = null;
-        options.JsonSerializerOptions.WriteIndented = true;
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+      options.JsonSerializerOptions.PropertyNamingPolicy = null;
+      options.JsonSerializerOptions.WriteIndented = true;
+      options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+      options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "Sistema CRUD API", 
-        Version = "v1",
-        Description = "API para gestión de Clientes, Lotes y Productos"
-    });
+  c.SwaggerDoc("v1", new OpenApiInfo
+  {
+    Title = "Sistema CRUD API",
+    Version = "v1",
+    Description = "API para gestión de Clientes, Lotes y Productos"
+  });
+  // Incluir comentarios XML (generados por el proyecto) para que aparezcan en Swagger
+  var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+  var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+  if (File.Exists(xmlPath))
+  {
+    c.IncludeXmlComments(xmlPath);
+  }
+  // Habilitar filtros de ejemplos
+  c.ExampleFilters();
 });
+
+// Registrar los providers de ejemplos
+builder.Services.AddSwaggerExamplesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 // Configurar CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+  options.AddPolicy("AllowAll",
+      builder =>
+      {
+        builder.AllowAnyOrigin()
+                 .AllowAnyMethod()
+                 .AllowAnyHeader();
+      });
 });
 
 // Configurar servicios
 string dbPath = Path.Combine(builder.Environment.ContentRootPath, "clientes.db");
-builder.Services.AddSingleton<SqliteConnectionFactory>(sp => 
+builder.Services.AddSingleton<SqliteConnectionFactory>(sp =>
     new SqliteConnectionFactory($"Data Source={dbPath}"));
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<ILoteRepository, LoteRepository>();
@@ -57,12 +71,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema CRUD API V1");
-        c.RoutePrefix = "swagger";
-    });
+  app.UseSwagger();
+  app.UseSwaggerUI(c =>
+  {
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema CRUD API V1");
+    c.RoutePrefix = "swagger";
+  });
 }
 
 app.UseHttpsRedirection();
@@ -73,14 +87,14 @@ app.MapControllers();
 // Asegurar que la base de datos existe
 using (var scope = app.Services.CreateScope())
 {
-    try
-    {
-        var factory = scope.ServiceProvider.GetRequiredService<SqliteConnectionFactory>();
-        using var connection = factory.CreateConnection();
-        connection.Open();
-        
-        // Crear tablas si no existen
-        connection.Execute(@"
+  try
+  {
+    var factory = scope.ServiceProvider.GetRequiredService<SqliteConnectionFactory>();
+    using var connection = factory.CreateConnection();
+    connection.Open();
+
+    // Crear tablas si no existen
+    connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Clientes (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 Nombre TEXT NOT NULL,
@@ -108,13 +122,13 @@ using (var scope = app.Services.CreateScope())
             );
         ");
 
-        app.Logger.LogInformation("Base de datos inicializada correctamente.");
-    }
-    catch (Exception ex)
-    {
-        app.Logger.LogError(ex, "Error al inicializar la base de datos.");
-        throw;
-    }
+    app.Logger.LogInformation("Base de datos inicializada correctamente.");
+  }
+  catch (Exception ex)
+  {
+    app.Logger.LogError(ex, "Error al inicializar la base de datos.");
+    throw;
+  }
 }
 
 app.Run();

@@ -25,7 +25,7 @@ namespace crud_c_.Modules.Productos.Infrastructure
       {
         using var conn = _factory.CreateConnection();
         const string sql = @"
-          INSERT INTO Producto (nombre, descripcion, precio, stock) 
+          INSERT INTO Productos (Nombre, Descripcion, Precio, Stock) 
           VALUES (@Nombre, @Descripcion, @Precio, @Stock);
           SELECT last_insert_rowid();";
 
@@ -43,7 +43,7 @@ namespace crud_c_.Modules.Productos.Infrastructure
       try
       {
         using var conn = _factory.CreateConnection();
-        const string sql = "SELECT Id, Nombre, Descripcion, Precio, Stock FROM Producto ORDER BY Nombre";
+        const string sql = "SELECT Id, Nombre, Descripcion, Precio, Stock FROM Productos ORDER BY Nombre";
         return await conn.QueryAsync<Producto>(sql);
       }
       catch (Exception ex)
@@ -57,7 +57,7 @@ namespace crud_c_.Modules.Productos.Infrastructure
       try
       {
         using var conn = _factory.CreateConnection();
-        const string sql = "SELECT Id, Nombre, Descripcion, Precio, Stock FROM Producto WHERE Id = @id";
+        const string sql = "SELECT Id, Nombre, Descripcion, Precio, Stock FROM Productos WHERE Id = @id";
         return await conn.QueryFirstOrDefaultAsync<Producto>(sql, new { id });
       }
       catch (Exception ex)
@@ -72,10 +72,10 @@ namespace crud_c_.Modules.Productos.Infrastructure
       {
         using var conn = _factory.CreateConnection();
         const string sql = @"
-          UPDATE Producto 
-          SET nombre = @Nombre, descripcion = @Descripcion, 
-              precio = @Precio, stock = @Stock 
-          WHERE id = @Id";
+          UPDATE Productos 
+          SET Nombre = @Nombre, Descripcion = @Descripcion, 
+              Precio = @Precio, Stock = @Stock 
+          WHERE Id = @Id";
 
         var rowsAffected = await conn.ExecuteAsync(sql, producto);
         return rowsAffected > 0;
@@ -91,7 +91,7 @@ namespace crud_c_.Modules.Productos.Infrastructure
       try
       {
         using var conn = _factory.CreateConnection();
-        const string sql = "DELETE FROM Producto WHERE id = @id";
+        const string sql = "DELETE FROM Productos WHERE Id = @id";
         var rowsAffected = await conn.ExecuteAsync(sql, new { id });
         return rowsAffected > 0;
       }

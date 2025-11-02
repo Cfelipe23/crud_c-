@@ -25,7 +25,7 @@ namespace crud_c_.Modules.Lotes.Infrastructure
       {
         using var conn = _factory.CreateConnection();
         const string sql = @"
-          INSERT INTO Lote (codigo, fecha_ingreso, cantidad, producto_id) 
+          INSERT INTO Lotes (Codigo, FechaIngreso, Cantidad, ProductoId) 
           VALUES (@Codigo, @FechaIngreso, @Cantidad, @ProductoId);
           SELECT last_insert_rowid();";
 
@@ -55,11 +55,11 @@ namespace crud_c_.Modules.Lotes.Infrastructure
           SELECT 
             Id, 
             Codigo, 
-            fecha_ingreso as FechaIngreso, 
+            FechaIngreso, 
             Cantidad, 
-            producto_id as ProductoId 
-          FROM Lote 
-          ORDER BY fecha_ingreso DESC";
+            ProductoId 
+          FROM Lotes 
+          ORDER BY FechaIngreso DESC";
 
         return await conn.QueryAsync<Lote>(sql);
       }
@@ -78,10 +78,10 @@ namespace crud_c_.Modules.Lotes.Infrastructure
           SELECT 
             Id, 
             Codigo, 
-            fecha_ingreso as FechaIngreso, 
+            FechaIngreso, 
             Cantidad, 
-            producto_id as ProductoId 
-          FROM Lote 
+            ProductoId 
+          FROM Lotes 
           WHERE Id = @id";
 
         return await conn.QueryFirstOrDefaultAsync<Lote>(sql, new { id });
@@ -98,10 +98,10 @@ namespace crud_c_.Modules.Lotes.Infrastructure
       {
         using var conn = _factory.CreateConnection();
         const string sql = @"
-          UPDATE Lote 
-          SET codigo = @Codigo, fecha_ingreso = @FechaIngreso, 
-              cantidad = @Cantidad, producto_id = @ProductoId 
-          WHERE id = @Id";
+          UPDATE Lotes 
+          SET Codigo = @Codigo, FechaIngreso = @FechaIngreso, 
+              Cantidad = @Cantidad, ProductoId = @ProductoId 
+          WHERE Id = @Id";
 
         var parameters = new
         {
@@ -126,7 +126,7 @@ namespace crud_c_.Modules.Lotes.Infrastructure
       try
       {
         using var conn = _factory.CreateConnection();
-        const string sql = "DELETE FROM Lote WHERE id = @id";
+        const string sql = "DELETE FROM Lotes WHERE Id = @id";
         var rowsAffected = await conn.ExecuteAsync(sql, new { id });
         return rowsAffected > 0;
       }

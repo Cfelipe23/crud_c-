@@ -25,7 +25,7 @@ namespace crud_c_.Modules.Clientes.Infrastructure
       {
         using var conn = _factory.CreateConnection();
         const string sql = @"
-          INSERT INTO Cliente (nombre, apellido, direccion, telefono, email) 
+          INSERT INTO Clientes (Nombre, Apellido, Direccion, Telefono, Email) 
           VALUES (@Nombre, @Apellido, @Direccion, @Telefono, @Email);
           SELECT last_insert_rowid();";
 
@@ -43,7 +43,7 @@ namespace crud_c_.Modules.Clientes.Infrastructure
       try
       {
         using var conn = _factory.CreateConnection();
-        const string sql = "SELECT Id, Nombre, Apellido, Direccion, Telefono, Email FROM Cliente ORDER BY Id ASC";
+        const string sql = "SELECT Id, Nombre, Apellido, Direccion, Telefono, Email FROM Clientes ORDER BY Id ASC";
         return await conn.QueryAsync<Cliente>(sql);
       }
       catch (Exception ex)
@@ -57,7 +57,7 @@ namespace crud_c_.Modules.Clientes.Infrastructure
       try
       {
         using var conn = _factory.CreateConnection();
-        const string sql = "SELECT Id, Nombre, Apellido, Direccion, Telefono, Email FROM Cliente WHERE Id = @id";
+        const string sql = "SELECT Id, Nombre, Apellido, Direccion, Telefono, Email FROM Clientes WHERE Id = @id";
         return await conn.QueryFirstOrDefaultAsync<Cliente>(sql, new { id });
       }
       catch (Exception ex)
@@ -72,10 +72,10 @@ namespace crud_c_.Modules.Clientes.Infrastructure
       {
         using var conn = _factory.CreateConnection();
         const string sql = @"
-          UPDATE Cliente 
-          SET nombre = @Nombre, apellido = @Apellido, direccion = @Direccion, 
-              telefono = @Telefono, email = @Email 
-          WHERE id = @Id";
+          UPDATE Clientes 
+          SET Nombre = @Nombre, Apellido = @Apellido, Direccion = @Direccion, 
+              Telefono = @Telefono, Email = @Email 
+          WHERE Id = @Id";
 
         var rowsAffected = await conn.ExecuteAsync(sql, cliente);
         return rowsAffected > 0;
@@ -91,7 +91,7 @@ namespace crud_c_.Modules.Clientes.Infrastructure
       try
       {
         using var conn = _factory.CreateConnection();
-        const string sql = "DELETE FROM Cliente WHERE id = @id";
+        const string sql = "DELETE FROM Clientes WHERE Id = @id";
         var rowsAffected = await conn.ExecuteAsync(sql, new { id });
         return rowsAffected > 0;
       }
