@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                🛒 Sistema de Gestion De Ventas
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/clientes.html">👤 Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/productos.html">🛍️ Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/lotes.html">📦 Lotes</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h1>Bienvenido al Sistema</h1>
+                <p class="lead text-muted">Gestión completa de Clientes, Productos y Lotes</p>
+            </div>
+        </div>
+
+        <!-- Tarjetas de Módulos -->
+        <div class="row mt-4">
+            <!-- Card Clientes -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                        <h5 class="card-title">Gestión de Clientes</h5>
+                        <p class="card-text text-muted">Administra la información de tus clientes.</p>
+                        <a href="pages/clientes.html" class="btn btn-primary">Ir a Clientes</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Productos -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🛍️</div>
+                        <h5 class="card-title">Gestión de Productos</h5>
+                        <p class="card-text text-muted">Controla el inventario de productos.</p>
+                        <a href="pages/productos.html" class="btn btn-primary">Ir a Productos</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Lotes -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+                        <h5 class="card-title">Gestión de Lotes</h5>
+                        <p class="card-text text-muted">Administra los lotes de productos.</p>
+                        <a href="pages/lotes.html" class="btn btn-primary">Ir a Lotes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Sistema de Ventas. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
